@@ -1,0 +1,390 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>LUNDERCOVER</title>
+
+  <link rel="icon" href="icon-192.png" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Lundercover" />
+
+  <!-- Open Graph (Discord, Messenger, etc.) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="LUNDERCOVER" />
+  <meta property="og:description" content="Mentez, déduisez, gagnez. Le jeu de l'imposteur en ligne entre amis." />
+  <meta property="og:image" content="https://lundercover.netlify.app/og-image.png" />
+  <meta name="theme-color" content="#e9e2d5" />
+
+  <!-- Twitter / Discord card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="LUNDERCOVER" />
+  <meta name="twitter:description" content="Mentez, déduisez, gagnez. Le jeu de l'imposteur en ligne entre amis." />
+  <link rel="stylesheet" href="style.css?v=7" />
+</head>
+<body>
+
+  <div id="toast">INFO <span id="toast-msg"></span></div>
+  <div id="network-banner" class="network-banner" aria-live="polite"></div>
+
+  <!-- Peek word -->
+  <button id="btn-peek" class="btn-peek is-hidden" title="Revoir mon mot">&#128065;&#65039;</button>
+  <div id="peek-overlay" class="peek-overlay">
+    <div class="peek-card">
+      <button class="peek-close" id="peek-close">&times;</button>
+      <div id="peek-step-select">
+        <h3 class="peek-title">Qui es-tu&nbsp;?</h3>
+        <div id="peek-players" class="peek-players"></div>
+      </div>
+      <div id="peek-step-word" class="peek-step-word">
+        <div class="peek-name" id="peek-name"></div>
+        <div id="peek-role-area"></div>
+        <div class="big-word" id="peek-word-text"></div>
+        <button class="btn btn-secondary full mt-4" id="peek-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="app">
+
+    <!-- ═══ MENU ═══ -->
+    <section id="screen-menu" class="screen active">
+      <h1 class="logo">LUNDERCOVER</h1>
+      <p class="tagline">Mentez, d&eacute;duisez, gagnez.</p>
+
+      <div class="mode-grid">
+        <button class="mode-card" id="btn-mode-salon">
+          <span class="mode-icon">01</span>
+          <span class="mode-title">Salon</span>
+          <span class="mode-desc">Un seul appareil circule entre les joueurs</span>
+        </button>
+        <button class="mode-card" id="btn-mode-host">
+          <span class="mode-icon">02</span>
+          <span class="mode-title">Cr&eacute;er une partie</span>
+          <span class="mode-desc">H&eacute;berge et partage un code aux joueurs</span>
+        </button>
+        <button class="mode-card" id="btn-mode-join">
+          <span class="mode-icon">03</span>
+          <span class="mode-title">Rejoindre</span>
+          <span class="mode-desc">Entre le code d&rsquo;une partie existante</span>
+        </button>
+      </div>
+
+      <section class="menu-rules" id="menu-rules" aria-label="R&egrave;gles">
+        <button type="button" class="menu-rules-toggle" id="menu-rules-toggle" aria-expanded="false">R&egrave;gles</button>
+        <div class="menu-rules-content" id="menu-rules-content">
+        <p><strong>Objectif :</strong> trouver le(s) imposteur(s) en discutant sans r&eacute;v&eacute;ler son mot.</p>
+        <p><strong>Distribution :</strong> chaque joueur re&ccedil;oit un mot secret. La plupart ont le m&ecirc;me mot, mais un ou plusieurs joueurs ont un mot diff&eacute;rent (les imposteurs).</p>
+        <p><strong>Tour :</strong> chacun donne &agrave; son tour un indice court (un mot) li&eacute; &agrave; son mot.</p>
+        <p><strong>Discussion :</strong> les joueurs peuvent discuter pour essayer d&rsquo;identifier les imposteurs.</p>
+        <p><strong>Vote :</strong> tous les joueurs votent pour &eacute;liminer quelqu&rsquo;un.</p>
+        <p><strong>&Eacute;limination :</strong> la personne avec le plus de votes est &eacute;limin&eacute;e et peut r&eacute;v&eacute;ler son r&ocirc;le.</p>
+        <p><strong>Victoire des citoyens :</strong> si tous les imposteurs sont &eacute;limin&eacute;s, les citoyens gagnent.</p>
+        <p><strong>Victoire des imposteurs :</strong> si les imposteurs sont en nombre &eacute;gal ou sup&eacute;rieur aux civils, ils gagnent.</p>
+        </div>
+      </section>
+
+      <button class="btn-clear-cache" id="btn-clear-cache" title="Vider le cache">
+        Vider le cache
+      </button>
+      <p class="version-tag" id="version-tag"></p>
+    </section>
+
+    <!-- ═══ JOIN ═══ -->
+    <section id="screen-join" class="screen zoom">
+      <h1 class="logo">Rejoindre</h1>
+      <p class="tagline">Entre le code donn&eacute; par l&rsquo;h&ocirc;te.</p>
+
+      <div class="card mb-4">
+        <span class="small-label">Ton pseudo</span>
+        <input type="text" id="join-name" placeholder="Ton nom&hellip;" maxlength="20" autocomplete="off" class="mb-3" />
+        <span class="small-label">Code de la partie</span>
+        <input type="text" id="join-code" class="join-code-input" placeholder="ABCD" maxlength="4" autocomplete="off" />
+      </div>
+      <button class="btn btn-primary" id="btn-join-connect">Se connecter &rsaquo;</button>
+      <button class="btn btn-ghost full mt-4" id="btn-join-back">&larr; Retour</button>
+    </section>
+
+    <!-- ═══ LOBBY (host) ═══ -->
+    <section id="screen-lobby" class="screen zoom dossier-screen" data-stamp="CLASSIFIE">
+      <h1 class="logo">Salon en ligne</h1>
+      <p class="tagline">Partage ce code aux joueurs&nbsp;:</p>
+
+      <div class="code-display-wrap">
+        <div class="code-display" id="lobby-code"></div>
+        <button class="btn btn-secondary" id="btn-copy-code" title="Copier">Copier</button>
+      </div>
+      <p class="dossier-meta" id="lobby-dossier"></p>
+
+      <div class="card mb-4">
+        <h2 class="section-title">Connect&eacute;s (<span id="lobby-count">0</span>)</h2>
+        <div id="lobby-players" class="player-grid"></div>
+        <p class="text-muted text-center mt-3" id="lobby-waiting">En attente de joueurs&hellip;</p>
+      </div>
+
+      <div class="card mb-4 space-y" id="lobby-config-card">
+        <h2 class="section-title">Configuration de la partie</h2>
+
+        <div class="flex-between">
+          <span>Difficult&eacute;</span>
+          <div class="segment" id="lobby-diff-segment">
+            <button class="segment-btn active" data-diff-lobby="facile">Facile</button>
+            <button class="segment-btn" data-diff-lobby="difficile">Dur</button>
+          </div>
+        </div>
+
+        <div class="flex-between">
+          <span>Nb. d&rsquo;imposteurs</span>
+          <div class="counter">
+            <button class="counter-btn" id="lobby-btn-imp-minus">&#8722;</button>
+            <span class="counter-val" id="lobby-imp-count">1</span>
+            <button class="counter-btn" id="lobby-btn-imp-plus">+</button>
+          </div>
+        </div>
+
+        <div>
+          <span class="small-label">R&ocirc;les Sp&eacute;ciaux</span>
+          <div class="space-y" id="lobby-role-cards"></div>
+        </div>
+
+        <div class="setup-recap" id="lobby-setup-recap">
+          <div class="small-label">R&eacute;capitulatif</div>
+          <div class="setup-recap-grid" id="lobby-setup-recap-grid"></div>
+          <p class="setup-recap-note" id="lobby-setup-recap-note"></p>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-lobby-start">Lancer la partie &rsaquo;</button>
+      <button class="btn btn-ghost full mt-4" id="btn-lobby-back">&larr; Annuler</button>
+    </section>
+
+    <!-- ═══ CLIENT WAIT ═══ -->
+    <section id="screen-client-wait" class="screen zoom dossier-screen text-center" data-stamp="EN ATTENTE">
+      <div class="pulse-dot"></div>
+      <h2 class="client-wait-title">Salon en attente</h2>
+      <p class="text-muted mb-4" id="client-lobby-status">En attente du lancement par l&rsquo;h&ocirc;te&hellip;</p>
+      <div class="card mb-4">
+        <div class="info-row"><span class="info-label">Partie</span><span class="info-val" id="client-room-code"></span></div>
+        <div class="info-row"><span class="info-label">Dossier</span><span class="info-val" id="client-dossier-ref"></span></div>
+        <div class="info-row"><span class="info-label">R&eacute;partition</span><span class="info-val" id="client-role-validity">En attente</span></div>
+        <p class="client-role-line" id="client-config-line">Configuration en attente&hellip;</p>
+        <p class="client-role-line" id="client-role-line">L&rsquo;h&ocirc;te ajuste les r&ocirc;les&hellip;</p>
+      </div>
+      <div class="card">
+        <h2 class="section-title">Connect&eacute;s (<span id="client-lobby-count">0</span>)</h2>
+        <div id="client-lobby-players" class="player-grid"></div>
+        <p class="text-muted text-center mt-3" id="client-lobby-waiting">En attente de joueurs&hellip;</p>
+      </div>
+      <button class="btn btn-ghost full mt-4" id="btn-client-wait-back">&larr; Quitter</button>
+    </section>
+
+    <!-- ═══ CLIENT REVEAL (joueur distant voit son mot) ═══ -->
+    <section id="screen-client-reveal" class="screen zoom text-center">
+      <h2 class="section-title text-center mb-4">Ton mot secret</h2>
+      <div class="reveal-card">
+        <div class="reveal-name" id="client-player-name"></div>
+        <div id="client-reveal-area" class="word-area"></div>
+      </div>
+    </section>
+
+    <!-- ═══ CLIENT INFO (messages de l'hôte) ═══ -->
+    <section id="screen-client-info" class="screen zoom text-center">
+      <div class="client-info-icon" id="client-info-icon"></div>
+      <h2 class="client-info-title" id="client-info-title"></h2>
+      <p class="text-muted" id="client-info-sub"></p>
+    </section>
+
+    <!-- ═══ CLIENT VOTE ═══ -->
+    <section id="screen-client-vote" class="screen zoom text-center">
+      <h2 class="section-title text-center mb-2">Le Vote</h2>
+      <p class="text-muted text-center mb-4" id="client-vote-sub">Choisis qui &eacute;liminer.</p>
+      <div class="vote-grid" id="client-vote-grid"></div>
+      <div id="client-vote-sent" class="is-hidden">
+        <div class="client-info-icon">OK</div>
+        <h2 class="client-info-title">Vote envoy&eacute;&nbsp;!</h2>
+        <p class="text-muted" id="client-vote-sent-sub">En attente des autres joueurs&hellip;</p>
+      </div>
+    </section>
+
+    <!-- ═══ CLIENT MR WHITE GUESS ═══ -->
+    <section id="screen-client-mrwhite" class="screen zoom guess-screen">
+      <span class="ghost-icon">MW</span>
+      <h2 class="guess-title">Tu es Mr. White&nbsp;!</h2>
+      <p class="text-muted mb-4">Devine le mot citoyen pour gagner.</p>
+      <div class="card">
+        <input type="text" id="client-mrwhite-input" class="guess-input mb-3"
+               placeholder="Ton guess&hellip;" maxlength="40" autocomplete="off" />
+        <button class="btn btn-primary" id="btn-client-mrwhite">Valider</button>
+      </div>
+    </section>
+
+    <!-- ═══ SETUP ═══ -->
+    <section id="screen-setup" class="screen">
+      <div class="card mb-4" id="setup-players-card">
+        <h2 class="section-title">Joueurs (<span id="player-count">4</span>)</h2>
+        <div class="flex-row mb-3">
+          <input type="text" id="player-input" placeholder="Nom du joueur&hellip;"
+                 maxlength="20" autocomplete="off" />
+          <button class="btn btn-icon" id="btn-add-player" title="Ajouter">&#65291;</button>
+        </div>
+        <div id="player-grid" class="player-grid"></div>
+      </div>
+
+      <div class="card mb-4" id="setup-host-name-card">
+        <span class="small-label">Ton pseudo (h&ocirc;te)</span>
+        <input type="text" id="host-name-input" placeholder="Ton nom&hellip;" maxlength="20" autocomplete="off" />
+      </div>
+
+      <div class="card mb-4 space-y" id="setup-options-card">
+        <h2 class="section-title">Options</h2>
+
+        <div class="flex-between">
+          <span>Difficult&eacute;</span>
+          <div class="segment">
+            <button class="segment-btn active" data-diff="facile">Facile</button>
+            <button class="segment-btn"        data-diff="difficile">Dur</button>
+          </div>
+        </div>
+
+        <div class="flex-between">
+          <span>Nb. d&rsquo;imposteurs</span>
+          <div class="counter">
+            <button class="counter-btn" id="btn-imp-minus">&#8722;</button>
+            <span class="counter-val"   id="imp-count">1</span>
+            <button class="counter-btn" id="btn-imp-plus">+</button>
+          </div>
+        </div>
+
+        <div>
+          <span class="small-label">R&ocirc;les Sp&eacute;ciaux</span>
+          <div class="space-y" id="role-cards"></div>
+        </div>
+
+        <div class="setup-recap" id="setup-recap">
+          <div class="small-label">R&eacute;capitulatif</div>
+          <div class="setup-recap-grid" id="setup-recap-grid"></div>
+          <p class="setup-recap-note" id="setup-recap-note"></p>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="btn-start">Lancer la partie &rsaquo;</button>
+      <button class="btn btn-ghost full mt-4" id="btn-setup-back">&larr; Retour</button>
+    </section>
+
+    <!-- ═══ REVEAL ═══ -->
+    <section id="screen-reveal" class="screen zoom dossier-screen" data-stamp="VERIFICATION">
+      <h2 class="section-title text-center mb-4">Distribution des mots</h2>
+      <div class="reveal-card">
+        <p class="text-muted">Passe le t&eacute;l&eacute;phone &agrave;&nbsp;:</p>
+        <div class="reveal-name" id="reveal-name"></div>
+        <div class="word-area"   id="word-area"></div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="reveal-progress"></div>
+        </div>
+        <p class="text-muted" id="reveal-counter"></p>
+      </div>
+    </section>
+
+    <!-- ═══ DISCUSSION ═══ -->
+    <section id="screen-discussion" class="screen">
+      <h2 class="section-title text-center mb-4">Tour <span id="turn-number">1</span></h2>
+      <div class="card mb-4">
+        <span class="small-label">Ordre de parole</span>
+        <div class="order-list" id="order-list"></div>
+      </div>
+      <p class="text-muted text-center mb-4">
+        Donnez chacun un indice d&eacute;crivant votre mot sans &ecirc;tre trop pr&eacute;cis.<br>
+        Les imposteurs doivent bluffer&nbsp;!
+      </p>
+      <button class="btn btn-primary" id="btn-go-vote">Passer au vote</button>
+    </section>
+
+    <!-- ═══ VOTE ═══ -->
+    <section id="screen-vote" class="screen zoom">
+      <h2 class="section-title text-center mb-2">Le Vote</h2>
+      <p class="text-muted text-center mb-4">D&eacute;signez l&rsquo;imposteur &agrave; &eacute;liminer.</p>
+      <div class="vote-grid" id="vote-grid"></div>
+      <button class="btn btn-ghost full mt-4" id="btn-back-discussion">
+        &larr; Retourner &agrave; la discussion
+      </button>
+    </section>
+
+    <!-- ═══ RESULT ═══ -->
+    <section id="screen-result" class="screen zoom result-center">
+      <div class="result-icon">X</div>
+      <p class="result-eliminated"><span id="result-name"></span> a &eacute;t&eacute; &eacute;limin&eacute;&nbsp;!</p>
+      <div class="info-box mb-4">
+        <div class="info-row">
+          <span class="info-label">R&ocirc;le</span>
+          <span class="info-val" id="result-role"></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Mot (cach&eacute;)</span>
+          <span class="info-val muted" id="result-word"></span>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-next-turn">Tour suivant &rarr;</button>
+    </section>
+
+    <!-- ═══ MR WHITE GUESS ═══ -->
+    <section id="screen-mrwhite" class="screen zoom guess-screen">
+      <span class="ghost-icon">MW</span>
+      <h2 class="guess-title">Mr. White d&eacute;masqu&eacute;&nbsp;!</h2>
+      <p class="text-muted mb-4">
+        <strong id="mrwhite-name"></strong>
+        peut encore gagner en devinant le mot citoyen.
+      </p>
+      <div class="card">
+        <span class="small-label">Proposition</span>
+        <input type="text" id="mrwhite-input" class="guess-input mb-3"
+               placeholder="Quel &eacute;tait le mot&nbsp;?" maxlength="40" autocomplete="off" />
+        <button class="btn btn-primary" id="btn-mrwhite-validate">Valider ma r&eacute;ponse</button>
+        <p class="text-muted text-center mt-2 mrwhite-note">
+          Si Mr. White trouve le mot exact, il gagne seul&nbsp;!
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ VICTORY ═══ -->
+    <section id="screen-victory" class="screen zoom dossier-screen" data-stamp="ARCHIVE">
+      <div class="victory-header">
+        <div class="trophy-wrap">
+          <div class="trophy-glow"></div>
+          <span class="trophy-text">FIN</span>
+        </div>
+        <h2 class="victory-title"    id="victory-title"></h2>
+        <p  class="victory-subtitle" id="victory-subtitle"></p>
+      </div>
+
+      <div class="card mt-4">
+        <div class="info-row">
+          <span class="info-label">Mot Citoyen</span>
+          <span class="info-val"        id="v-word-citoyen"></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Mot Imposteur</span>
+          <span class="info-val muted"  id="v-word-imposteur"></span>
+        </div>
+        <hr class="divider" />
+        <span class="small-label">R&eacute;cap des r&ocirc;les</span>
+        <div class="recap-roles" id="recap-roles"></div>
+      </div>
+
+      <button class="btn btn-primary mt-4" id="btn-replay">Rejouer une partie</button>
+    </section>
+
+  </div><!-- #app -->
+
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js?v=2"></script>
+  <script src="words.js?v=3"></script>
+  <script src="script.js?v=6"></script>
+</body>
+</html>
