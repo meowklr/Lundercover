@@ -26,7 +26,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="LUNDERCOVER" />
   <meta name="twitter:description" content="Mentez, déduisez, gagnez. Le jeu de l'imposteur en ligne entre amis." />
-  <link rel="stylesheet" href="style.css?v=8" />
+  <link rel="stylesheet" href="style.css?v=9" />
 </head>
 <body>
 
@@ -138,20 +138,28 @@
         <h2 class="section-title">Configuration</h2>
 
         <div class="setup-bar">
-          <div class="segment" id="lobby-diff-segment">
-            <button class="segment-btn active" data-diff-lobby="facile">Facile</button>
-            <button class="segment-btn" data-diff-lobby="difficile">Dur</button>
+          <div class="setup-control">
+            <span class="counter-label">Diff.</span>
+            <div class="segment" id="lobby-diff-segment">
+              <button class="segment-btn active" data-diff-lobby="facile">Facile</button>
+              <button class="segment-btn" data-diff-lobby="difficile">Dur</button>
+            </div>
           </div>
-          <div class="segment" id="lobby-timer-segment">
-            <button class="segment-btn" data-timer-lobby="30">30s</button>
-            <button class="segment-btn active" data-timer-lobby="60">60s</button>
-            <button class="segment-btn" data-timer-lobby="90">90s</button>
+          <div class="setup-control">
+            <span class="counter-label">Vote</span>
+            <div class="segment" id="lobby-timer-segment">
+              <button class="segment-btn" data-timer-lobby="30">30s</button>
+              <button class="segment-btn active" data-timer-lobby="60">60s</button>
+              <button class="segment-btn" data-timer-lobby="90">90s</button>
+            </div>
           </div>
-          <div class="counter">
+          <div class="setup-control">
             <span class="counter-label">Imp.</span>
-            <button class="counter-btn" id="lobby-btn-imp-minus">&#8722;</button>
-            <span class="counter-val" id="lobby-imp-count">1</span>
-            <button class="counter-btn" id="lobby-btn-imp-plus">+</button>
+            <div class="counter">
+              <button class="counter-btn" id="lobby-btn-imp-minus">&#8722;</button>
+              <span class="counter-val" id="lobby-imp-count">1</span>
+              <button class="counter-btn" id="lobby-btn-imp-plus">+</button>
+            </div>
           </div>
         </div>
 
@@ -244,20 +252,28 @@
         <h2 class="section-title">Configuration</h2>
 
         <div class="setup-bar">
-          <div class="segment">
-            <button class="segment-btn active" data-diff="facile">Facile</button>
-            <button class="segment-btn"        data-diff="difficile">Dur</button>
+          <div class="setup-control">
+            <span class="counter-label">Diff.</span>
+            <div class="segment">
+              <button class="segment-btn active" data-diff="facile">Facile</button>
+              <button class="segment-btn" data-diff="difficile">Dur</button>
+            </div>
           </div>
-          <div class="segment" id="setup-timer-segment">
-            <button class="segment-btn" data-timer="30">30s</button>
-            <button class="segment-btn active" data-timer="60">60s</button>
-            <button class="segment-btn" data-timer="90">90s</button>
+          <div class="setup-control">
+            <span class="counter-label">Vote</span>
+            <div class="segment" id="setup-timer-segment">
+              <button class="segment-btn" data-timer="30">30s</button>
+              <button class="segment-btn active" data-timer="60">60s</button>
+              <button class="segment-btn" data-timer="90">90s</button>
+            </div>
           </div>
-          <div class="counter">
+          <div class="setup-control">
             <span class="counter-label">Imp.</span>
-            <button class="counter-btn" id="btn-imp-minus">&#8722;</button>
-            <span class="counter-val"   id="imp-count">1</span>
-            <button class="counter-btn" id="btn-imp-plus">+</button>
+            <div class="counter">
+              <button class="counter-btn" id="btn-imp-minus">&#8722;</button>
+              <span class="counter-val" id="imp-count">1</span>
+              <button class="counter-btn" id="btn-imp-plus">+</button>
+            </div>
           </div>
         </div>
 
@@ -397,7 +413,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
   <script src="firebase-config.js?v=2"></script>
   <script src="words.js?v=3"></script>
-  <script type="module" src="script.js?v=7"></script>
+  <script type="module" src="script.js?v=8"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js").catch(function() {});

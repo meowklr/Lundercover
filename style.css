@@ -358,14 +358,6 @@ input[type="text"]:-webkit-autofill:focus {
 
 /* ── Counter ── */
 .counter { display: flex; align-items: center; gap: .35rem; }
-.counter-label {
-  font-family: "Courier Prime", "Courier New", monospace;
-  font-size: .6rem;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
 .counter-btn { width: 32px; height: 32px; border: 1.5px solid var(--border); background: var(--surface2); color: var(--text); border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: border-color .2s; display: flex; align-items: center; justify-content: center; }
 .counter-btn:hover { border-color: #8a7860; color: #355070; }
 .counter-btn:disabled {
@@ -384,32 +376,8 @@ input[type="text"]:-webkit-autofill:focus {
 .player-pill button:hover { color: #8f1f16; }
 
 .name-inline { margin-right: .28rem; }
-.name-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: .18rem;
-  padding: .1rem .32rem;
-  border-radius: 4px;
-  min-height: 18px;
-  font-family: "Courier Prime", "Courier New", monospace;
-  font-size: .62rem;
-  line-height: 1;
-  font-weight: 600;
-  letter-spacing: .02em;
-  text-transform: uppercase;
-  color: #6e231b;
-  background:
-    repeating-linear-gradient(0deg, rgba(110,35,27,.05) 0 1px, rgba(110,35,27,0) 1px 3px),
-    rgba(180,35,24,.08);
-  border: 1px solid rgba(180,35,24,.38);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.24);
-  vertical-align: middle;
-}
-.name-badge.host { color: #29445f; background: rgba(53,80,112,.1); border-color: rgba(53,80,112,.45); }
-
-body.dark .name-badge { color: #e8b8b4; background: rgba(212,132,120,.12); border-color: rgba(212,132,120,.3); }
-body.dark .name-badge.host { color: #90c0e8; background: rgba(90,130,180,.14); border-color: rgba(90,130,180,.3); }
+.name-self { color: #4a3228; font-weight: 600; }
+body.dark .name-self { color: #c5a895; }
 
 /* ── Role Cards ── */
 .role-card { display: flex; align-items: flex-start; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: .9rem 1rem; cursor: pointer; transition: border-color .2s, background .2s, box-shadow .2s, transform .2s; user-select: none; outline: none; }
@@ -1163,17 +1131,11 @@ body.dark .hold-reveal-hint.is-holding { color: #80a8d8; }
   font-family: "Courier Prime", "Courier New", monospace;
   font-weight: 600;
   letter-spacing: .06em;
-  transition: color .15s ease, border-color .15s ease, background .15s ease, transform .15s ease;
+  transition: color .2s ease;
   margin-top: .65rem;
-  will-change: transform;
 }
-.btn-menu:hover {
-  color: var(--text);
-  border-color: var(--accent);
-  background: var(--surface2);
-  transform: translateX(-2px);
-}
-.btn-menu:active { transform: scale(.985) translateX(-2px); }
+.btn-menu:hover { color: var(--text); }
+.btn-menu:active { transform: scale(.985); }
 
 /* ── Theme Toggle Button ── */
 .btn-theme {
@@ -1220,11 +1182,25 @@ body.dark .theme-sun  { display: block; }
 /* ── Setup Bar (compact, centered) ── */
 .setup-bar {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: .5rem;
+  gap: .7rem;
   flex-wrap: wrap;
   margin-bottom: .7rem;
+}
+.setup-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .18rem;
+}
+.counter-label {
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: .56rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 .setup-summary {
   margin-top: .6rem;
@@ -1274,7 +1250,8 @@ body.dark .theme-sun  { display: block; }
 }
 
 @media (max-width: 480px) {
-  .setup-bar { justify-content: flex-start; gap: .35rem; }
+  .setup-bar { justify-content: flex-start; gap: .45rem; }
+  .setup-control { gap: .12rem; }
   .roles-inline { justify-content: flex-start; }
   .roles-inline .role-card { padding: .3rem .5rem; }
   .roles-inline .role-card .role-info .name { font-size: .7rem; }

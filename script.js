@@ -161,21 +161,9 @@ const launchConfettiOnce = (key) => {
 /* ─── RENDER HELPERS ────────────────────────────── */
 const appendNameWithBadges = (container, name, hostName) => {
   const nameSpan = document.createElement("span");
-  nameSpan.className = "name-inline";
+  nameSpan.className = "name-inline" + (name === myName ? " name-self" : "");
   setText(nameSpan, name);
   container.appendChild(nameSpan);
-  if (name === myName) {
-    const me = document.createElement("span");
-    me.className = "name-badge";
-    setText(me, "toi");
-    container.appendChild(me);
-  }
-  if (hostName && name === hostName) {
-    const host = document.createElement("span");
-    host.className = "name-badge host";
-    setText(host, "h\u00f4te");
-    container.appendChild(host);
-  }
 };
 
 const renderOrderList = (listEl, order, hostName) => {

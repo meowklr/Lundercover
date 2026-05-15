@@ -1,9 +1,11 @@
-const CACHE = "lundercover-v2";
+const CACHE = "lundercover-v3";
 const ASSETS = [
   "/",
   "/index.html",
   "/style.css",
   "/script.js",
+  "/engine.js",
+  "/network.js",
   "/words.js",
   "/firebase-config.js",
   "/manifest.json",
