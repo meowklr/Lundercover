@@ -20,18 +20,24 @@
   <meta property="og:title" content="LUNDERCOVER" />
   <meta property="og:description" content="Mentez, déduisez, gagnez. Le jeu de l'imposteur en ligne entre amis." />
   <meta property="og:image" content="https://lundercover.netlify.app/og-image.png" />
-  <meta name="theme-color" content="#e9e2d5" />
+  <meta name="theme-color" content="#e9e2d5" id="meta-theme-color" />
 
   <!-- Twitter / Discord card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="LUNDERCOVER" />
   <meta name="twitter:description" content="Mentez, déduisez, gagnez. Le jeu de l'imposteur en ligne entre amis." />
-  <link rel="stylesheet" href="style.css?v=7" />
+  <link rel="stylesheet" href="style.css?v=8" />
 </head>
 <body>
 
-  <div id="toast">INFO <span id="toast-msg"></span></div>
+  <div id="toast" class="toast-base">INFO <span id="toast-msg"></span></div>
   <div id="network-banner" class="network-banner" aria-live="polite"></div>
+
+  <!-- Dark mode toggle -->
+  <button id="btn-theme" class="btn-theme" title="Basculer thème" aria-label="Basculer thème">
+    <svg class="theme-svg theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    <svg class="theme-svg theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
 
   <!-- Peek word -->
   <button id="btn-peek" class="btn-peek is-hidden" title="Revoir mon mot">&#128065;&#65039;</button>
@@ -128,36 +134,30 @@
         <p class="text-muted text-center mt-3" id="lobby-waiting">En attente de joueurs&hellip;</p>
       </div>
 
-      <div class="card mb-4 space-y" id="lobby-config-card">
-        <h2 class="section-title">Configuration de la partie</h2>
+      <div class="card mb-4" id="lobby-config-card">
+        <h2 class="section-title">Configuration</h2>
 
-        <div class="flex-between">
-          <span>Difficult&eacute;</span>
+        <div class="setup-bar">
           <div class="segment" id="lobby-diff-segment">
             <button class="segment-btn active" data-diff-lobby="facile">Facile</button>
             <button class="segment-btn" data-diff-lobby="difficile">Dur</button>
           </div>
-        </div>
-
-        <div class="flex-between">
-          <span>Nb. d&rsquo;imposteurs</span>
+          <div class="segment" id="lobby-timer-segment">
+            <button class="segment-btn" data-timer-lobby="30">30s</button>
+            <button class="segment-btn active" data-timer-lobby="60">60s</button>
+            <button class="segment-btn" data-timer-lobby="90">90s</button>
+          </div>
           <div class="counter">
+            <span class="counter-label">Imp.</span>
             <button class="counter-btn" id="lobby-btn-imp-minus">&#8722;</button>
             <span class="counter-val" id="lobby-imp-count">1</span>
             <button class="counter-btn" id="lobby-btn-imp-plus">+</button>
           </div>
         </div>
 
-        <div>
-          <span class="small-label">R&ocirc;les Sp&eacute;ciaux</span>
-          <div class="space-y" id="lobby-role-cards"></div>
-        </div>
+        <div class="roles-inline" id="lobby-role-cards"></div>
 
-        <div class="setup-recap" id="lobby-setup-recap">
-          <div class="small-label">R&eacute;capitulatif</div>
-          <div class="setup-recap-grid" id="lobby-setup-recap-grid"></div>
-          <p class="setup-recap-note" id="lobby-setup-recap-note"></p>
-        </div>
+        <p class="setup-summary" id="lobby-setup-recap-note"></p>
       </div>
       <button class="btn btn-primary" id="btn-lobby-start">Lancer la partie &rsaquo;</button>
       <button class="btn btn-ghost full mt-4" id="btn-lobby-back">&larr; Annuler</button>
@@ -240,36 +240,43 @@
         <input type="text" id="host-name-input" placeholder="Ton nom&hellip;" maxlength="20" autocomplete="off" />
       </div>
 
-      <div class="card mb-4 space-y" id="setup-options-card">
-        <h2 class="section-title">Options</h2>
+      <div class="card mb-4" id="setup-options-card">
+        <h2 class="section-title">Configuration</h2>
 
-        <div class="flex-between">
-          <span>Difficult&eacute;</span>
+        <div class="setup-bar">
           <div class="segment">
             <button class="segment-btn active" data-diff="facile">Facile</button>
             <button class="segment-btn"        data-diff="difficile">Dur</button>
           </div>
-        </div>
-
-        <div class="flex-between">
-          <span>Nb. d&rsquo;imposteurs</span>
+          <div class="segment" id="setup-timer-segment">
+            <button class="segment-btn" data-timer="30">30s</button>
+            <button class="segment-btn active" data-timer="60">60s</button>
+            <button class="segment-btn" data-timer="90">90s</button>
+          </div>
           <div class="counter">
+            <span class="counter-label">Imp.</span>
             <button class="counter-btn" id="btn-imp-minus">&#8722;</button>
             <span class="counter-val"   id="imp-count">1</span>
             <button class="counter-btn" id="btn-imp-plus">+</button>
           </div>
         </div>
 
-        <div>
-          <span class="small-label">R&ocirc;les Sp&eacute;ciaux</span>
-          <div class="space-y" id="role-cards"></div>
-        </div>
+        <div class="roles-inline" id="role-cards"></div>
 
-        <div class="setup-recap" id="setup-recap">
-          <div class="small-label">R&eacute;capitulatif</div>
-          <div class="setup-recap-grid" id="setup-recap-grid"></div>
-          <p class="setup-recap-note" id="setup-recap-note"></p>
-        </div>
+        <details class="custom-words-section" id="custom-words-section">
+          <summary class="custom-words-summary">+ Mots personnalisés</summary>
+          <div class="custom-words-body">
+            <div class="flex-row" style="gap:.35rem">
+              <input type="text" id="custom-word-citoyen" placeholder="Mot citoyen" maxlength="30" autocomplete="off" style="font-size:.76rem;padding:.35rem .5rem" />
+              <input type="text" id="custom-word-imposteur" placeholder="Mot imposteur" maxlength="30" autocomplete="off" style="font-size:.76rem;padding:.35rem .5rem" />
+              <button class="btn btn-icon" id="btn-add-custom-word" title="Ajouter" style="padding:.3rem .5rem;font-size:.8rem">+</button>
+            </div>
+            <div id="custom-words-list" class="custom-words-list"></div>
+            <p class="text-muted" style="font-size:.62rem;margin-top:.2rem" id="custom-words-count"></p>
+          </div>
+        </details>
+
+        <p class="setup-summary" id="setup-recap-note"></p>
       </div>
 
       <button class="btn btn-primary" id="btn-start">Lancer la partie &rsaquo;</button>
@@ -301,7 +308,9 @@
         Donnez chacun un indice d&eacute;crivant votre mot sans &ecirc;tre trop pr&eacute;cis.<br>
         Les imposteurs doivent bluffer&nbsp;!
       </p>
-      <button class="btn btn-primary" id="btn-go-vote">Passer au vote</button>
+      <!-- Chat (online only) -->
+      <div id="chat-container" style="display:none"></div>
+      <button class="btn btn-primary mt-4" id="btn-go-vote">Passer au vote</button>
     </section>
 
     <!-- ═══ VOTE ═══ -->
@@ -309,6 +318,10 @@
       <h2 class="section-title text-center mb-2">Le Vote</h2>
       <p class="text-muted text-center mb-4">D&eacute;signez l&rsquo;imposteur &agrave; &eacute;liminer.</p>
       <div class="vote-grid" id="vote-grid"></div>
+      <div class="vote-timer" id="vote-timer" style="display:none">
+        <div class="vote-timer-bar"><div class="vote-timer-fill" id="vote-timer-fill"></div></div>
+        <span class="vote-timer-text" id="vote-timer-text">60s</span>
+      </div>
       <button class="btn btn-ghost full mt-4" id="btn-back-discussion">
         &larr; Retourner &agrave; la discussion
       </button>
@@ -376,6 +389,7 @@
       </div>
 
       <button class="btn btn-primary mt-4" id="btn-replay">Rejouer une partie</button>
+      <button class="btn-menu" id="btn-back-menu" style="display:none">&larr; Retour au menu</button>
     </section>
 
   </div><!-- #app -->
@@ -385,6 +399,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
   <script src="firebase-config.js?v=2"></script>
   <script src="words.js?v=3"></script>
-  <script src="script.js?v=6"></script>
+  <script type="module" src="script.js?v=7"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(function() {});
+    }
+  </script>
 </body>
 </html>

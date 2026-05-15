@@ -6,7 +6,7 @@
    L'imposteur ne doit pas pouvoir deviner l'autre mot
    juste en voyant le sien.
    ══════════════════════════════ */
-const PAIRES = {
+var PAIRES = {
   facile: [
     ["Chat","Lapin"],["Pomme","Pastèque"],["Soleil","Ampoule"],["Voiture","Traîneau"],
     ["Guitare","Harpe"],["Football","Handball"],["Pizza","Crêpe"],["Montagne","Gratte-ciel"],
