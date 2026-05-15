@@ -466,7 +466,7 @@ body.dark .name-self { color: #c5a895; }
 .vote-btn:hover .eliminate-label { opacity: 1; }
 .eliminate-label { opacity: 0; color: #8f1f16; font-size: .72rem; font-weight: 700; letter-spacing: .06em; transition: opacity .2s; }
 .vote-btn.voted { border-color: #355070; background: rgba(53,80,112,.1); pointer-events: none; }
-.vote-btn.voted .eliminate-label { opacity: 1; color: #355070; }
+.vote-btn.voted .eliminate-label { display: none; }
 .vote-btn:disabled { opacity: .4; pointer-events: none; }
 .vote-counter { text-align: center; margin-top: 1rem; font-size: .9rem; color: var(--muted); font-weight: 600; }
 .vote-counter .count { color: #355070; font-weight: 900; }
@@ -1069,7 +1069,7 @@ body.dark .guess-screen .ghost-icon { color: #80a8d8; }
 
 body.dark .order-num { color: #7098c8; border-color: rgba(90,104,128,.35); }
 body.dark .vote-btn.voted { border-color: #4a6080; background: rgba(74,96,128,.14); }
-body.dark .vote-btn.voted .eliminate-label { color: #7098c8; }
+body.dark .vote-btn.voted .eliminate-label { display: none; }
 body.dark .vote-counter .count { color: #7098c8; }
 body.dark .vote-tally-fill { background: #4a6080; }
 body.dark .code-display { color: #7098c8; }

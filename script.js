@@ -35,29 +35,12 @@ const showScreen = (id, anim) => {
   if (!target) return;
 
   const current = document.querySelector(".screen.active");
-
-  // Skip if already showing this screen
   if (current === target) return;
 
-  // Remove active from all OTHER screens first
-  document.querySelectorAll(".screen").forEach(s => {
-    if (s !== current) s.classList.remove("active", "zoom", "exit");
-  });
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active", "zoom", "exit"));
 
-  // If there's a current screen, exit it then show target
-  if (current) {
-    current.classList.add("exit");
-    const onExitEnd = function handler() {
-      current.removeEventListener("animationend", handler);
-      current.classList.remove("active", "zoom", "exit");
-      target.classList.add("active");
-      if (anim === "zoom") target.classList.add("zoom");
-    };
-    current.addEventListener("animationend", onExitEnd, { once: true });
-  } else {
-    target.classList.add("active");
-    if (anim === "zoom") target.classList.add("zoom");
-  }
+  target.classList.add("active");
+  if (anim === "zoom") target.classList.add("zoom");
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -736,6 +719,9 @@ function cleanupVoteState() {
   engine.state.expectedVoters = null;
   engine.state.votes = {};
   engine.state.voteCandidates = null;
+  if (voteInterval) { clearInterval(voteInterval); voteInterval = null; }
+  const timerContainer = $("vote-timer");
+  if (timerContainer) { timerContainer.style.display = "none"; timerContainer.classList.remove("is-urgent"); }
 }
 
 /* ─── ELIMINATION ───────────────────────────────── */
@@ -849,8 +835,7 @@ function showVictory(winner) {
   $("btn-replay").style.display = "";
   setText($("btn-replay"), netMode === "host" ? "Relancer dans ce lobby" : "Rejouer une partie");
 
-  // Show back-to-menu only in salon mode
-  $("btn-back-menu").style.display = (netMode === "salon") ? "" : "none";
+  $("btn-back-menu").style.display = "";
   showScreen("victory", "zoom");
 
   const confettiKey = [
@@ -1286,7 +1271,7 @@ function showClientVictory(data) {
 
   $("btn-replay").style.display = "";
   setText($("btn-replay"), "Relancer dans ce lobby");
-  $("btn-back-menu").style.display = "none";
+  $("btn-back-menu").style.display = "";
   showScreen("victory", "zoom");
   launchConfettiOnce(["client", data.title || "", data.motCitoyen || "", data.motImposteur || ""].join("|"));
 }
