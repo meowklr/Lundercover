@@ -151,7 +151,7 @@ export class NetworkManager {
     });
 
     // Listen for client actions
-    this._listen("actions", snap => {
+    this._listen("actions", "child_added", snap => {
       const data = snap.val();
       if (data) {
         this._emit("messageReceived", data.fromUid, data);
@@ -308,25 +308,6 @@ export class NetworkManager {
     this.roomRef.child("pairDeckState").set(state).catch(() => {});
   }
 
-  /* ─── CHAT ──────────────────────────────────────── */
-
-  async sendChatMessage(text) {
-    if (!this.roomRef) return;
-    this.roomRef.child("chat").push({
-      from: this.isHostRoom ? this._hostName : this._lastJoinName,
-      text: String(text).trim().slice(0, 200),
-      ts: Date.now()
-    }).catch(() => {});
-  }
-
-  listenChat(callback) {
-    if (!this.roomRef) return;
-    this._listen(this.roomRef.child("chat").limitToLast(50), "child_added", snap => {
-      const data = snap.val();
-      if (data) callback(data.from, data.text, data.ts);
-    });
-  }
-
   /* ─── CLEANUP ───────────────────────────────────── */
 
   async leaveRoom() {
@@ -334,8 +315,6 @@ export class NetworkManager {
     if (this.roomRef && this.myUid) {
       try {
         if (this.isHostRoom) {
-          // Delete chat messages to avoid accumulating garbage
-          this.roomRef.child("chat").remove().catch(() => {});
           // Delete mailboxes and actions
           this.roomRef.child("mailboxes").remove().catch(() => {});
           this.roomRef.child("actions").remove().catch(() => {});

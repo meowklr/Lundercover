@@ -4,12 +4,10 @@
 
 import { GameEngine } from "./engine.js";
 import { NetworkManager } from "./network.js";
-import { ChatManager } from "./chat.js";
 
 /* ─── Globals ────────────────────────────────────── */
 const engine = new GameEngine();
 const network = new NetworkManager();
-let chat = null;
 
 let netMode = "salon";  // "salon" | "host" | "client"
 let myName = "";
@@ -567,13 +565,6 @@ function startDiscussion() {
       sub: JSON.stringify({ turn: data.turn, order: data.order, hostName: myName })
     });
   }
-
-  // Show chat for online modes
-  if (chat && (netMode === "host" || netMode === "client")) {
-    chat.clear();
-    chat.show();
-    chat.startListening();
-  }
 }
 
 /* ─── VOTE ──────────────────────────────────────── */
@@ -582,7 +573,6 @@ let voteInterval = null;
 function showVote(candidates) {
   const voteData = engine.startVote(candidates);
   $("btn-back-discussion").style.display = netMode === "salon" ? "" : "none";
-  hideChat();
 
   const grid = $("vote-grid");
   grid.innerHTML = "";
@@ -760,10 +750,6 @@ function cleanupVoteState() {
   engine.state.voteCandidates = null;
 }
 
-function hideChat() {
-  if (chat) chat.hide();
-}
-
 /* ─── ELIMINATION ───────────────────────────────── */
 function handleElimination(target) {
   const elimResult = engine.handleElimination(target);
@@ -895,10 +881,7 @@ function showVictory(winner) {
     });
   }
 
-  if (chat) chat.hide();
 }
-
-/* ─── REPLAY ─────────────────────────────────────── */
 function doReplay() {
   if (netMode === "host" && network.roomRef) {
     returnOnlineMatchToLobby(myName);
@@ -1279,7 +1262,6 @@ function showClientDiscussion(data) {
   $("btn-go-vote").style.display = "none";
   $("btn-back-discussion").style.display = "none";
   showScreen("discussion");
-  if (chat) { chat.clear(); chat.show(); chat.startListening(); }
 }
 
 function showClientVictory(data) {
@@ -1319,7 +1301,6 @@ function showClientVictory(data) {
   $("btn-back-menu").style.display = "none";
   showScreen("victory", "zoom");
   launchConfettiOnce(["client", data.title || "", data.motCitoyen || "", data.motImposteur || ""].join("|"));
-  if (chat) chat.hide();
 }
 
 /* ─── CLIENT: network events ────────────────────── */
@@ -1364,9 +1345,6 @@ async function attemptJoin() {
     const result = await network.joinRoom(codeRaw, myName);
     network.setLastJoinName(myName);
 
-    // Initialize chat
-    chat = new ChatManager(network, { myName, containerId: "chat-container" });
-
     setText($("client-room-code"), result.code);
     setText($("client-dossier-ref"), "DOS-" + result.code + "-" + new Date().toISOString().slice(0, 10).replace(/-/g, ""));
     renderClientRolePreview(null);
@@ -1399,9 +1377,6 @@ async function startHosting() {
     // Load deck state
     const deckState = await network.getDeckState();
     engine.setDeckState(deckState);
-
-    // Init chat
-    chat = new ChatManager(network, { myName, containerId: "chat-container" });
 
     setText($("lobby-code"), code);
     setText($("lobby-dossier"), "DOS-" + code + "-" + new Date().toISOString().slice(0, 10).replace(/-/g, ""));
