@@ -1,2 +1,26 @@
+# Environnement et secrets
 .env
+.env.*
+!.env.example
+
+# Dependances et builds eventuels
+node_modules/
+dist/
+.netlify/
+
+# Logs et fichiers temporaires
+*.log
+npm-debug.log*
 resume_modifs.txt
+
+# Editeurs et IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Systeme d'exploitation
+.DS_Store
+Thumbs.db
+Desktop.ini
